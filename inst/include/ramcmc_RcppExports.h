@@ -63,11 +63,11 @@ namespace ramcmc {
         return Rcpp::as<arma::mat >(rcpp_result_gen);
     }
 
-    inline arma::mat adjust_S(arma::mat S, arma::vec u, double current, double target, unsigned int n, double gamma) {
+    inline void adjust_S(arma::mat& S, arma::vec& u, double current, double target, unsigned int n, double gamma) {
         typedef SEXP(*Ptr_adjust_S)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_adjust_S p_adjust_S = NULL;
         if (p_adjust_S == NULL) {
-            validateSignature("arma::mat(*adjust_S)(arma::mat,arma::vec,double,double,unsigned int,double)");
+            validateSignature("void(*adjust_S)(arma::mat&,arma::vec&,double,double,unsigned int,double)");
             p_adjust_S = (Ptr_adjust_S)R_GetCCallable("ramcmc", "ramcmc_adjust_S");
         }
         RObject rcpp_result_gen;
@@ -79,7 +79,6 @@ namespace ramcmc {
             throw Rcpp::internal::InterruptedException();
         if (rcpp_result_gen.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<arma::mat >(rcpp_result_gen);
     }
 
 }

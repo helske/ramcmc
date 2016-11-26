@@ -11,6 +11,9 @@ chol_update(L, u)
 
 \item{u}{A vector with with length matching with the dimensions of L.}
 }
+\value{
+Updated L.
+}
 \description{
 Given the lower triangular matrix L obtained from the Cholesky decomposition of A,
 function \code{chol_update} updates L such that it corresponds to the decomposition of A + u*u'.

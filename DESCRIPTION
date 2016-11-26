@@ -1,14 +1,15 @@
 Package: ramcmc
-Type: Package
-Title: Header
+Title: Robust Adaptive Metropolis Algorithm
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Jouni Helske
+Maintainer: Jouni Helske <jouni.helske@jyu.fi>
+Description: Fast Cholesky update and downdate functions, 
+    and function for updating the covariance matrix of the proposal 
+    distribution as specified in robust adaptive Metropolis algorithm 
+    by Vihola (2012). These functions can be used directly from R or 
+    the corresponding C++ header files can be linked to other R packages.
+License: GPL (>= 2)
 Encoding: UTF-8
-LazyData: true
 Imports:
     Rcpp (>= 0.12.8)
 LinkingTo: Rcpp, RcppArmadillo

@@ -9,6 +9,22 @@
 
 using namespace Rcpp;
 
+// adjust_S_copy
+arma::mat adjust_S_copy(arma::mat S, arma::vec u, double current, double target, unsigned int n, double gamma);
+RcppExport SEXP ramcmc_adjust_S_copy(SEXP SSEXP, SEXP uSEXP, SEXP currentSEXP, SEXP targetSEXP, SEXP nSEXP, SEXP gammaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< double >::type current(currentSEXP);
+    Rcpp::traits::input_parameter< double >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< unsigned int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
+    rcpp_result_gen = Rcpp::wrap(adjust_S_copy(S, u, current, target, n, gamma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cholupdate
 arma::mat cholupdate(arma::mat L, arma::vec u);
 static SEXP ramcmc_cholupdate_try(SEXP LSEXP, SEXP uSEXP) {
@@ -72,18 +88,17 @@ RcppExport SEXP ramcmc_choldowndate(SEXP LSEXP, SEXP uSEXP) {
     return rcpp_result_gen;
 }
 // adjust_S
-arma::mat adjust_S(arma::mat S, arma::vec u, double current, double target, unsigned int n, double gamma);
+void adjust_S(arma::mat& S, arma::vec& u, double current, double target, unsigned int n, double gamma);
 static SEXP ramcmc_adjust_S_try(SEXP SSEXP, SEXP uSEXP, SEXP currentSEXP, SEXP targetSEXP, SEXP nSEXP, SEXP gammaSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type u(uSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type u(uSEXP);
     Rcpp::traits::input_parameter< double >::type current(currentSEXP);
     Rcpp::traits::input_parameter< double >::type target(targetSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type n(nSEXP);
     Rcpp::traits::input_parameter< double >::type gamma(gammaSEXP);
-    rcpp_result_gen = Rcpp::wrap(adjust_S(S, u, current, target, n, gamma));
-    return rcpp_result_gen;
+    adjust_S(S, u, current, target, n, gamma);
+    return R_NilValue;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP ramcmc_adjust_S(SEXP SSEXP, SEXP uSEXP, SEXP currentSEXP, SEXP targetSEXP, SEXP nSEXP, SEXP gammaSEXP) {
@@ -113,7 +128,7 @@ static int ramcmc_RcppExport_validate(const char* sig) {
     if (signatures.empty()) {
         signatures.insert("arma::mat(*cholupdate)(arma::mat,arma::vec)");
         signatures.insert("arma::mat(*choldowndate)(arma::mat,arma::vec)");
-        signatures.insert("arma::mat(*adjust_S)(arma::mat,arma::vec,double,double,unsigned int,double)");
+        signatures.insert("void(*adjust_S)(arma::mat&,arma::vec&,double,double,unsigned int,double)");
     }
     return signatures.find(sig) != signatures.end();
 }
