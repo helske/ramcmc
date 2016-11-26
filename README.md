@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/helske/ramcmc.png?branch=master)](https://travis-ci.org/helske/ramcmc)
 # ramcmc: Building blocks for Robust Adaptive Metropolis algorithm
 
 This small package provides key functions for the [RAM algorithm by Vihola (2012)](http://link.springer.com/article/10.1007/s11222-011-9269-5). These can be used directly from R or the corresponding header files can be linked to other R packages.
