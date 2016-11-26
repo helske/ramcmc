@@ -10,7 +10,7 @@
 #' @return Updated L.
 #' @export
 chol_update <- function(L, u) {
-  cholupdate(L, u)
+  cholupdateR(L, u)
 }
 #' Downdate Cholesky Decomposition
 #'
@@ -25,7 +25,7 @@ chol_update <- function(L, u) {
 #' @return Updated L.
 #' @export
 chol_downdate <- function(L, u) {
-  L <- choldowndate(L, u)
+  L <- choldowndateR(L, u)
   if(any(!is.finite(L)) || any(diag(L) < 0)) {
     stop("Resulting matrix is not positive definite.")
   }
@@ -51,5 +51,5 @@ update_S <- function(S, u, current, n, target = 0.234, gamma = 2/3) {
   if(any(S[upper.tri(S)] != 0)) {
     stop("S must be lower triangular matrix.")
   }
-  adjust_S_copy(S, u, current, target, n, gamma)
+  adjust_SR(S, u, current, target, n, gamma)
 }
