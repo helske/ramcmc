@@ -9,8 +9,12 @@ Description: Fast Cholesky update and downdate functions,
     by Vihola (2012). These functions can be used directly from R or 
     the corresponding C++ header files can be linked to other R packages.
 License: GPL (>= 2)
-Encoding: UTF-8
+BugReports: https://github.com/helske/ramcmc/issues
+Suggests: 
+    testthat,
+    knitr
 Imports:
     Rcpp (>= 0.12.8)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
