@@ -10,6 +10,7 @@
 #' @return Updated L.
 #' @export
 chol_update <- function(L, u) {
+  check_args(L, u)
   chol_updateR(L, u)
 }
 #' Downdate Cholesky Decomposition
@@ -25,6 +26,7 @@ chol_update <- function(L, u) {
 #' @return Updated L.
 #' @export
 chol_downdate <- function(L, u) {
+  check_args(L, u)
   L <- chol_downdateR(L, u)
   if(any(!is.finite(L)) || any(diag(L) < 0)) {
     stop("Resulting matrix is not positive definite.")
@@ -34,18 +36,19 @@ chol_downdate <- function(L, u) {
 #' Update the Proposal of RAM Algorithm
 #'
 #' Given the lower triangular matrix L obtained from the Cholesky decomposition of A,
-#' function chol_downdate updates L such that it corresponds to the decomposition of A - u*u'
-#' (if such decomposition exists).
+#' function \code{adapt_L} updates L according to the RAM algorithm.
 #'
 #' @note The function does not check that the resulting matrix is positive semidefinite.
 #'
-#' @param S A lower triangular matrix corresponding to the Cholesky decomposition.
+#' @param L A lower triangular matrix corresponding to the Cholesky decomposition.
 #' @param u A vector with with length matching with the dimensions of L.
 #' @param current The current acceptance probability.
 #' @param n Scaling parameter corresponding to the current iteration number.
 #' @param target The target acceptance rate. Default is 0.234.
 #' @param gamma Scaling parameter. Default is 2/3.
-#' @return Updated S.
+#' @return Updated L.
+#' @references Matti Vihola (2012). "Robust adaptive Metropolis algorithm with coerced acceptance rate".
+#' Statistics and Computing, 22: 997. doi:10.1007/s11222-011-9269-5
 #' @export
 #' @examples
 #'
@@ -53,12 +56,12 @@ chol_downdate <- function(L, u) {
 #'
 #' adapt_mcmc <- function(n = 10000, sigma) {
 #'   x <- numeric(n)
-#'   loglik_old <- dnorm(x[1])
+#'   loglik_old <- dnorm(x[1], log = TRUE)
 #'   for (i in 2:n) {
 #'     u <- rnorm(1, sd = sigma)
 #'     prop <- x[i] + u
-#'     loglik <- dnorm(prop)
-#'     accept_prob <- min(1, loglik/loglik_old)
+#'     loglik <- dnorm(prop, log = TRUE)
+#'     accept_prob <- min(1, exp(loglik - loglik_old))
 #'     if (runif(1) < accept_prob) {
 #'       x[i] <- prop
 #'       loglik_old <- loglik
@@ -66,25 +69,53 @@ chol_downdate <- function(L, u) {
 #'       x[i] <- x[i - 1]
 #'     }
 #'     if (i < n/2) {
-#'       sigma <- update_S(sigma, u, accept_prob, i, 0.44)
+#'       sigma <- adapt_L(sigma, u, accept_prob, i)
 #'     }
 #'   }
 #'   list(x = x[(n/2):n], sigma = sigma)
 #' }
 #'
-#' out <- adapt_mcmc(1e4, 2)
+#' out <- adapt_mcmc(1e5, 2)
 #' out$sigma
 #' hist(out$x)
 #' # acceptance rate:
 #' 1 / mean(rle(out$x)$lengths)
-update_S <- function(S, u, current, n, target = 0.234, gamma = 2/3) {
+#'
+adapt_L <- function(L, u, current, n, target = 0.234, gamma = 2/3) {
 
-  if(!is.matrix(S) && length(S) == 1) {
-    S <- as.matrix(S)
+  if(!is.matrix(L) && length(L) == 1) {
+    L <- as.matrix(L)
   }
+  check_args(L, u)
+  if(any(L[upper.tri(L)] != 0)) {
+    stop("L must be lower triangular matrix.")
+  }
+  if(n < 0) {
+    stop("Argument 'n' must be non-negative.")
+  }
+  if(length(current) > 1 || current > 1 || current < 0) {
+    stop("Argument 'current' must be a value between 0 and 1.")
+  }
+  if(length(target) > 1 || target > 1 || target < 0) {
+    stop("Argument 'target' must be a value between 0 and 1.")
+  }
+  if(length(gamma) > 1 || gamma > 1 || gamma < 0) {
+    stop("Argument 'gamma' must be a value between 0 and 1.")
+  }
+  adapt_LR(L, u, current, target, n, gamma)
+}
 
-  if(any(S[upper.tri(S)] != 0)) {
-    stop("S must be lower triangular matrix.")
+check_args <- function(L, u){
+  if (!is.matrix(L)) {
+    stop("Argument 'L' must be a matrix.")
   }
-  adjust_SR(S, u, current, target, n, gamma)
+  if (!is.numeric(u)) {
+    stop("Argument 'u' must be a numeric vector.")
+  }
+  if (nrow(L) != ncol(L)) {
+    stop("Argument 'L' must be square matrix.")
+  }
+  if (nrow(L) != length(u)) {
+    stop("Length of 'u' must be equal to the number of rows in 'L'.")
+  }
 }

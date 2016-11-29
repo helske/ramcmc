@@ -32,17 +32,17 @@ The package cointains three functions, two of which can be useful in more genera
 
 The idea of the RAM algorithm is to adaptively update the covariance matrix of the proposal distribution used in the general Metropolis type Markov chain Monte Carlo (MCMC) algoritm. We first fix the target acceptance rate $\alpha^{\ast}$, for example to the famous 0.234, and the value of the tuning parameter $\gamma \in (0,1]$. Then at iteration $i$ of the MCMC:
 
-(1) Compute the proposal $\theta' = \theta_{i-1} + S_{i-1} u_i$, where $u_i$ is simulated from the standard $d$-dimensional Gaussian distribution and $S_{i-1}$ is a lower diagonal matrix with positive diagonal elements. 
+(1) Compute the proposal $\theta' = \theta_{i-1} + L_{i-1} u_i$, where $u_i$ is simulated from the standard $d$-dimensional Gaussian distribution and $L_{i-1}$ is a lower diagonal matrix with positive diagonal elements. 
 (2) Accept the proposal with probability $\alpha_i := \min\{1, \frac{p(\theta')p(y | \theta')}{p(\theta_{i-1}) p(y | \theta_{i-1})\}}$.
 (3) If the proposal $\theta'$ is accepted, set $\theta_i = \theta'$ Otherwise, set $\theta_i = \theta_{i-1}$.
-(4) Compute the Cholesky factor $S_i$ satisfying the equation
+(4) Compute the Cholesky factor $L_i$ satisfying the equation
 $$
-S_i S_i^T = S_{i-1}\left(I + \min\{1, d i^{-\gamma}\} (\alpha_i - \alpha^{\ast}) \frac{u_i u_i^T}{\|u_i\|^2}\right) S_{i-1}^T.
+L_i L_i^T = L_{i-1}\left(I + \min\{1, d i^{-\gamma}\} (\alpha_i - \alpha^{\ast}) \frac{u_i u_i^T}{\|u_i\|^2}\right) L_{i-1}^T.
 $$
 
 For theoretical details and comparisons with other adaptive Metropolis algorithms, see @Vihola2012.
 
-For step (4) of the previous algorithm, instead of computing the right hand side of the equation and performing new Cholesky decomposition, we can use [rank-one update or downdate](https://en.wikipedia.org/wiki/Cholesky_decomposition#Updating_the_decomposition) (depending on the sign of $(\alpha_i - \alpha^{\ast})$) on the previous $S_{i-1}$ in order to obtain new $S_i$, which is computationally much more efficient.
+For step (4) of the previous algorithm, instead of computing the right hand side of the equation and performing new Cholesky decomposition, we can use [rank-one update or downdate](https://en.wikipedia.org/wiki/Cholesky_decomposition#Updating_the_decomposition) (depending on the sign of $(\alpha_i - \alpha^{\ast})$) on the previous $L_{i-1}$ in order to obtain new $L_i$, which is computationally much more efficient.
 
 ## Illustration
 
@@ -57,10 +57,10 @@ y <- X %*% theta_true[1:2] + rnorm(100)
 
 ```
 
-And here is our MCMC algorithm which takes in the data (`y`, `X`), initial values for the parameters (`theta0`), initial value for the Cholesky factor for the multivariate normal proposal (`S`), number of iterations (`n_iter`), length of the burn-in period (`n_burnin`), and a logical argument `adapt` which tells whether we should adapt the proposal covariance or not:
+And here is our MCMC algorithm which takes in the data (`y`, `X`), initial values for the parameters (`theta0`), initial value for the Cholesky factor for the multivariate normal proposal (`L`), number of iterations (`n_iter`), length of the burn-in period (`n_burnin`), and a logical argument `adapt` which tells whether we should adapt the proposal covariance or not:
 
 ```{r}
-metropolis <- function(y, X, theta0, S, n_iter, n_burnin, adapt = FALSE) {
+metropolis <- function(y, X, theta0, L, n_iter, n_burnin, adapt = FALSE) {
   
   p <- length(theta0)
   theta <- matrix(NA, n_iter, p)
@@ -71,7 +71,7 @@ metropolis <- function(y, X, theta0, S, n_iter, n_burnin, adapt = FALSE) {
   
   for (i in 2:n_iter){
     u <- rnorm(p)
-    theta_prop <- theta[i - 1, ] + S %*% u
+    theta_prop <- theta[i - 1, ] + L %*% u
     if (theta_prop[p] > 0) {
       mu <- X %*% theta_prop[1:(p - 1)]
       posterior_prop <- sum(dnorm(y, mean = mu, sd = theta_prop[p], log = TRUE))
@@ -88,10 +88,10 @@ metropolis <- function(y, X, theta0, S, n_iter, n_burnin, adapt = FALSE) {
       acceptance_prob <- 0
     }
     if(adapt & i <= n_burnin) {
-      S <- ramcmc::update_S(S, u, acceptance_prob, i - 1)
+      L <- ramcmc::adapt_L(L, u, acceptance_prob, i - 1)
     }
   }
-  list(theta = theta[(n_burnin + 1):n_iter, ], S = S,
+  list(theta = theta[(n_burnin + 1):n_iter, ], L = L,
     acceptance_rate = sum(accept[(n_burnin + 1):n_iter]) / (n_iter - n_burnin))
 }
 ```
@@ -113,7 +113,7 @@ As we can see, even when we start with a very poor proposal covariance, we get g
 
 # Linking to other R packages
 
-Although one can use functions `update_S` (corresponding to the updating equation of the previous Section), `chol_update`, and `chol_downdate` in `R`, you can also use the underlying `C++` code directly in your own `R` packages on the `C++`. In order to do so, you just need to add `#include "ramcmc.h"` to relevant source files in your package, and add `ramcmc` to `LinkingTo` field on the `DESCRIPTION` file of your package.
+Although one can use functions `adapt_L` (corresponding to the updating equation of the previous Section), `chol_update`, and `chol_downdate` in `R`, you can also use the underlying `C++` code directly in your own `R` packages on the `C++`. In order to do so, you just need to add `#include "ramcmc.h"` to relevant source files in your package, and add `ramcmc` to `LinkingTo` field on the `DESCRIPTION` file of your package.
 
 
 # References

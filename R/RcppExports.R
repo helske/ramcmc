@@ -9,7 +9,7 @@ chol_downdateR <- function(L, u) {
     .Call('ramcmc_chol_downdateR', PACKAGE = 'ramcmc', L, u)
 }
 
-adjust_SR <- function(S, u, current, target, n, gamma) {
-    .Call('ramcmc_adjust_SR', PACKAGE = 'ramcmc', S, u, current, target, n, gamma)
+adapt_LR <- function(L, u, current, target, n, gamma) {
+    .Call('ramcmc_adapt_LR', PACKAGE = 'ramcmc', L, u, current, target, n, gamma)
 }
 
