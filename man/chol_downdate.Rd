@@ -2,7 +2,7 @@
 % Please edit documentation in R/update.R
 \name{chol_downdate}
 \alias{chol_downdate}
-\title{Downdate Cholesky Decomposition}
+\title{Rank-one Downdate of Cholesky Decomposition}
 \usage{
 chol_downdate(L, u)
 }

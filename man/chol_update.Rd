@@ -2,7 +2,7 @@
 % Please edit documentation in R/update.R
 \name{chol_update}
 \alias{chol_update}
-\title{Update Cholesky Decomposition}
+\title{Rank-one Update of Cholesky Decomposition}
 \usage{
 chol_update(L, u)
 }
@@ -17,5 +17,13 @@ Updated L.
 \description{
 Given the lower triangular matrix L obtained from the Cholesky decomposition of A,
 function \code{chol_update} updates L such that it corresponds to the decomposition of A + u*u'.
+}
+\examples{
+
+L <- matrix(c(4,3,0,5), 2, 2)
+u <- c(1, 2)
+chol_update(L, u)
+t(chol(L \%*\% t(L) + u \%*\% t(u)))
+
 }
 

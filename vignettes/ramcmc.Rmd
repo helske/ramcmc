@@ -88,7 +88,7 @@ metropolis <- function(y, X, theta0, L, n_iter, n_burnin, adapt = FALSE) {
       acceptance_prob <- 0
     }
     if(adapt & i <= n_burnin) {
-      L <- ramcmc::adapt_L(L, u, acceptance_prob, i - 1)
+      L <- ramcmc::adapt_S(L, u, acceptance_prob, i - 1)
     }
   }
   list(theta = theta[(n_burnin + 1):n_iter, ], L = L,
@@ -113,7 +113,7 @@ As we can see, even when we start with a very poor proposal covariance, we get g
 
 # Linking to other R packages
 
-Although one can use functions `adapt_L` (corresponding to the updating equation of the previous Section), `chol_update`, and `chol_downdate` in `R`, you can also use the underlying `C++` code directly in your own `R` packages on the `C++`. In order to do so, you just need to add `#include "ramcmc.h"` to relevant source files in your package, and add `ramcmc` to `LinkingTo` field on the `DESCRIPTION` file of your package.
+Although one can use functions `adapt_S` (corresponding to the updating equation of the previous Section), `chol_update`, and `chol_downdate` in `R`, you can also use the underlying `C++` code directly in your own `R` packages on the `C++`. In order to do so, you just need to add `#include "ramcmc.h"` to relevant source files in your package, and add `ramcmc` to `LinkingTo` field on the `DESCRIPTION` file of your package.
 
 
 # References

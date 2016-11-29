@@ -3,11 +3,11 @@ Title: Robust Adaptive Metropolis Algorithm
 Version: 0.1.0
 Author: Jouni Helske
 Maintainer: Jouni Helske <jouni.helske@jyu.fi>
-Description: Fast Cholesky update and downdate functions, 
-    and function for updating the covariance matrix of the proposal 
-    distribution as specified in robust adaptive Metropolis algorithm 
-    by Vihola (2012). These functions can be used directly from R or 
-    the corresponding C++ header files can be linked to other R packages.
+Description: Function for adapting the shape of the random walk Metropolis proposal
+    as specified in robust adaptive Metropolis algorithm by Vihola (2012). 
+    Package also includes fast functions for rank-one Cholesky update and downdate.
+    These functions can be used directly from R or the corresponding C++ header files 
+    can be easily linked to other R packages.
 License: GPL (>= 2)
 BugReports: https://github.com/helske/ramcmc/issues
 Suggests: 

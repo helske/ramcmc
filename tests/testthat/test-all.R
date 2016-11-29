@@ -41,33 +41,37 @@ test_that("chol_downdate works", {
 
 context("test RAM update")
 
-test_that("adapt_L works", {
+test_that("adapt_S works", {
 
-  expect_error(adapt_L(1, 1))
-  expect_error(adapt_L(1, 1, 0.3))
-  expect_error(adapt_L(diag(2), 1, 0.3, 2))
-  expect_error(adapt_L(diag(2), "a", 0.3, 2))
-  expect_error(adapt_L(list(2,2), 1, 0.3, 2))
-  expect_error(adapt_L(1, 1, "a", 2))
-  expect_error(adapt_L(1, 1, 0.3, "a"))
-  expect_error(adapt_L(1, 1, 3, -1))
-  expect_error(adapt_L(1, 1, 3, 1))
-  expect_error(adapt_L(1, 1, 0.3, 1, c(0.1,0.3)))
-  expect_error(adapt_L(1, 1, 0.3, 1, 0.3, 3))
+  expect_error(adapt_S(1, 1))
+  expect_error(adapt_S(1, 1, 0.3))
+  expect_error(adapt_S(diag(2), 1, 0.3, 2))
+  expect_error(adapt_S(diag(2), "a", 0.3, 2))
+  expect_error(adapt_S(list(2,2), 1, 0.3, 2))
+  expect_error(adapt_S(1, 1, "a", 2))
+  expect_error(adapt_S(1, 1, 0.3, "a"))
+  expect_error(adapt_S(1, 1, 3, -1))
+  expect_error(adapt_S(1, 1, 3, 1))
+  expect_error(adapt_S(1, 1, 0.3, 1, c(0.1,0.3)))
+  expect_error(adapt_S(1, 1, 0.3, 1, 0.3, 3))
 
-  L <- matrix(c(1.1,2,0,4), 2, 2)
+  S <- matrix(c(1.1, 2, 0, 4), 2, 2)
   u <- c(2, 1)
   #target == current
-  expect_identical(adapt_L(L, u, 0.234, 1), L)
+  expect_identical(adapt_S(S, u, 0.234, 1), S)
 
-  L <- diag(2)
+  S <- diag(2)
   u <- c(1, 1)
-  L_new <- t(chol(L - 0.234 * u%*%t(u)/(sum(u^2))))
-  expect_equal(adapt_L(L, u, 0, 0), L_new, tol = 1e-15)
+  S_new <- t(chol(S - 0.234 * u %*% t(u) / sum(u^2)))
+  expect_equal(adapt_S(S, u, 0, 0), S_new, tol = 1e-15)
 
-  L <- matrix(c(1.1,2,0,4), 2, 2)
+  S <- matrix(c(1.1, 2, 0, 4), 2, 2)
   u <- c(2, 3)
-  L_new <- L %*% t(chol(diag(2) - 2 * 10^(-2/3) * 0.234 * u%*%t(u)/(sum(u^2))))
-  expect_equal(adapt_L(L, u, 0, n = 10), L_new, tol = 1e-15)
+  S_new <- S %*% t(chol(diag(2) - 2 * 10^(-2/3) * 0.234 * u %*% t(u)/sum(u^2)))
+  expect_equal(adapt_S(S, u, 0, n = 10), S_new, tol = 1e-15)
 
+  # pathological case where the downdating would result non-positive definite matrix
+  S <- diag(2)
+  u <- c(1, 0)
+  expect_identical(adapt_S(diag(2), c(1, 0), n = 1, target = 1, current = 0), diag(2))
 })
