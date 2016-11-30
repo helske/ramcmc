@@ -53,7 +53,7 @@ test_that("adapt_S works", {
   expect_error(adapt_S(1, 1, 3, -1))
   expect_error(adapt_S(1, 1, 3, 1))
   expect_error(adapt_S(1, 1, 0.3, 1, c(0.1,0.3)))
-  expect_error(adapt_S(1, 1, 0.3, 1, 0.3, 3))
+  expect_error(adapt_S(1, 1, 0, 1, 1))
 
   S <- matrix(c(1.1, 2, 0, 4), 2, 2)
   u <- c(2, 1)
@@ -70,8 +70,4 @@ test_that("adapt_S works", {
   S_new <- S %*% t(chol(diag(2) - 2 * 10^(-2/3) * 0.234 * u %*% t(u)/sum(u^2)))
   expect_equal(adapt_S(S, u, 0, n = 10), S_new, tol = 1e-15)
 
-  # pathological case where the downdating would result non-positive definite matrix
-  S <- diag(2)
-  u <- c(1, 0)
-  expect_identical(adapt_S(diag(2), c(1, 0), n = 1, target = 1, current = 0), diag(2))
 })
