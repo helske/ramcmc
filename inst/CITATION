@@ -1,0 +1,25 @@
+c(
+bibentry(
+  bibtype = "Manual",
+  title = "{ramcmc}: Robust Adaptive Metropolis Algorithm",
+  author = "Jouni Helske",
+  year = sub("-.*", "", meta$Date),
+  note = sprintf("R package version %s", meta$Version),
+  url = "http://github.com/helske/ramcmc",
+  key = "ramcmc"
+),
+bibentry(
+  bibtype = "Article",
+  title = "Robust adaptive {M}etropolis algorithm with coerced acceptance rate",
+  author = "Matti Vihola",
+  journal = "Statistics and Computing",
+  year = "2012",
+  volume="22",
+  number="5",
+  pages="997--1008",
+  issn="1573-1375",
+  doi="10.1007/s11222-011-9269-5",
+  url="http://dx.doi.org/10.1007/s11222-011-9269-5",
+  key = "RAM"
+  )
+)
