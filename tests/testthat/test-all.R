@@ -54,16 +54,24 @@ test_that("adapt_S works", {
   expect_error(adapt_S(1, 1, 3, 1))
   expect_error(adapt_S(1, 1, 0.3, 1, c(0.1,0.3)))
   expect_error(adapt_S(1, 1, 0, 1, 1))
+  expect_error(adapt_S(1, 1, 0, 1, gamma = 2))
+  expect_error(adapt_S(matrix(1, 2, 2), c(1, 1), 0, 1))
+  expect_error(adapt_S(matrix(1, 2, 1), c(1, 1), 0, 1))
 
   S <- matrix(c(1.1, 2, 0, 4), 2, 2)
   u <- c(2, 1)
   #target == current
   expect_identical(adapt_S(S, u, 0.234, 1), S)
 
+  #downdate
   S <- diag(2)
   u <- c(1, 1)
   S_new <- t(chol(S - 0.234 * u %*% t(u) / sum(u^2)))
   expect_equal(adapt_S(S, u, 0, 0), S_new, tol = 1e-15)
+
+  #update
+  S_new <- t(chol(S + 0.234 * u %*% t(u) / sum(u^2)))
+  expect_equal(adapt_S(S, u, 0.334, 0, 0.1), S_new, tol = 1e-15)
 
   S <- matrix(c(1.1, 2, 0, 4), 2, 2)
   u <- c(2, 3)
