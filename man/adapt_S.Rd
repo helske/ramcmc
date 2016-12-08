@@ -34,12 +34,14 @@ If the downdating would result non-positive definite matrix, no adaptation is pe
 \examples{
 
 # sample from standard normal distribution
+# use proposals from the uniform distribution on
+# interval (-s, s), where we adapt s
 
-adapt_mcmc <- function(n = 10000, sigma) {
+adapt_mcmc <- function(n = 10000, s) {
   x <- numeric(n)
   loglik_old <- dnorm(x[1], log = TRUE)
   for (i in 2:n) {
-    u <- rnorm(1, sd = sigma)
+    u <- s * runif(1, -1, 1)
     prop <- x[i] + u
     loglik <- dnorm(prop, log = TRUE)
     accept_prob <- min(1, exp(loglik - loglik_old))
@@ -49,15 +51,16 @@ adapt_mcmc <- function(n = 10000, sigma) {
     } else {
       x[i] <- x[i - 1]
     }
+    # Adapt only during the burn-in
     if (i < n/2) {
-      sigma <- adapt_S(sigma, u, accept_prob, i)
+      s <- adapt_S(s, u, accept_prob, i)
     }
   }
-  list(x = x[(n/2):n], sigma = sigma)
+  list(x = x[(n/2):n], s = s)
 }
 
 out <- adapt_mcmc(1e5, 2)
-out$sigma
+out$s
 hist(out$x)
 # acceptance rate:
 1 / mean(rle(out$x)$lengths)
