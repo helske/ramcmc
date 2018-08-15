@@ -9,7 +9,7 @@ using namespace Rcpp;
 
 // chol_updateR
 arma::mat chol_updateR(arma::mat L, arma::vec u);
-RcppExport SEXP ramcmc_chol_updateR(SEXP LSEXP, SEXP uSEXP) {
+RcppExport SEXP _ramcmc_chol_updateR(SEXP LSEXP, SEXP uSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -21,7 +21,7 @@ END_RCPP
 }
 // chol_downdateR
 arma::mat chol_downdateR(arma::mat L, arma::vec u);
-RcppExport SEXP ramcmc_chol_downdateR(SEXP LSEXP, SEXP uSEXP) {
+RcppExport SEXP _ramcmc_chol_downdateR(SEXP LSEXP, SEXP uSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -33,7 +33,7 @@ END_RCPP
 }
 // adapt_SR
 arma::mat adapt_SR(arma::mat S, arma::vec u, double current, double target, unsigned int n, double gamma);
-RcppExport SEXP ramcmc_adapt_SR(SEXP SSEXP, SEXP uSEXP, SEXP currentSEXP, SEXP targetSEXP, SEXP nSEXP, SEXP gammaSEXP) {
+RcppExport SEXP _ramcmc_adapt_SR(SEXP SSEXP, SEXP uSEXP, SEXP currentSEXP, SEXP targetSEXP, SEXP nSEXP, SEXP gammaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -46,4 +46,16 @@ BEGIN_RCPP
     rcpp_result_gen = Rcpp::wrap(adapt_SR(S, u, current, target, n, gamma));
     return rcpp_result_gen;
 END_RCPP
+}
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_ramcmc_chol_updateR", (DL_FUNC) &_ramcmc_chol_updateR, 2},
+    {"_ramcmc_chol_downdateR", (DL_FUNC) &_ramcmc_chol_downdateR, 2},
+    {"_ramcmc_adapt_SR", (DL_FUNC) &_ramcmc_adapt_SR, 6},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_ramcmc(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
 }

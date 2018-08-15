@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 chol_updateR <- function(L, u) {
-    .Call('ramcmc_chol_updateR', PACKAGE = 'ramcmc', L, u)
+    .Call('_ramcmc_chol_updateR', PACKAGE = 'ramcmc', L, u)
 }
 
 chol_downdateR <- function(L, u) {
-    .Call('ramcmc_chol_downdateR', PACKAGE = 'ramcmc', L, u)
+    .Call('_ramcmc_chol_downdateR', PACKAGE = 'ramcmc', L, u)
 }
 
 adapt_SR <- function(S, u, current, target, n, gamma) {
-    .Call('ramcmc_adapt_SR', PACKAGE = 'ramcmc', S, u, current, target, n, gamma)
+    .Call('_ramcmc_adapt_SR', PACKAGE = 'ramcmc', S, u, current, target, n, gamma)
 }
 
