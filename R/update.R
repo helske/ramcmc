@@ -69,8 +69,8 @@ chol_downdate <- function(L, u) {
 #'   x <- numeric(n)
 #'   loglik_old <- dnorm(x[1], log = TRUE)
 #'   for (i in 2:n) {
-#'     u <- s * runif(1, -1, 1)
-#'     prop <- x[i] + u
+#'     u <- runif(1, -1, 1)
+#'     prop <- x[i] + s * u
 #'     loglik <- dnorm(prop, log = TRUE)
 #'     accept_prob <- min(1, exp(loglik - loglik_old))
 #'     if (runif(1) < accept_prob) {

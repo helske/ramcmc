@@ -2,8 +2,12 @@ Package: ramcmc
 Title: Robust Adaptive Metropolis Algorithm
 Version: 0.1.0-1
 Date: 2018-05-29
-Author: Jouni Helske
-Maintainer: Jouni Helske <jouni.helske@iki.fi>
+Authors@R: 
+    person(given = "Jouni",
+           family = "Helske",
+           role = c("aut", "cre"),
+           email = "jouni.helske@iki.fi",
+           comment = c(ORCID = "0000-0001-7130-793X"))
 Description: Function for adapting the shape of the random walk Metropolis proposal
     as specified by robust adaptive Metropolis algorithm by Vihola (2012) <DOI:10.1007/s11222-011-9269-5>. 
     Package also includes fast functions for rank-one Cholesky update and downdate.
