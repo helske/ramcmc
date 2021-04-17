@@ -1,7 +1,7 @@
 Package: ramcmc
 Title: Robust Adaptive Metropolis Algorithm
-Version: 0.1.0-1
-Date: 2018-05-29
+Version: 0.1.1
+Date: 2020-04-19
 Authors@R: 
     person(given = "Jouni",
            family = "Helske",
@@ -10,14 +10,15 @@ Authors@R:
            comment = c(ORCID = "0000-0001-7130-793X"))
 Description: Function for adapting the shape of the random walk Metropolis proposal
     as specified by robust adaptive Metropolis algorithm by Vihola (2012) <DOI:10.1007/s11222-011-9269-5>. 
-    Package also includes fast functions for rank-one Cholesky update and downdate.
+    The package also includes fast functions for rank-one Cholesky update and downdate.
     These functions can be used directly from R or the corresponding C++ header files 
     can be easily linked to other R packages.
 License: GPL (>= 2)
 BugReports: https://github.com/helske/ramcmc/issues
 Suggests: 
     testthat,
-    knitr
+    knitr,
+    rmarkdown
 Imports:
     Rcpp (>= 0.12.8)
 LinkingTo: Rcpp, RcppArmadillo
